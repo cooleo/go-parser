@@ -37,16 +37,16 @@ func TestIsDetailPage(t *testing.T) {
 }
 
 func TestStartParser(t *testing.T) {
-    url2 := "http://tv.zing.vn/video/Nhan-Qua-Cuoc-Doi-Trailer/IWZB86F9.html"
+	url2 := "http://tv.zing.vn/video/Nhan-Qua-Cuoc-Doi-Trailer/IWZB86F9.html"
 	document, _ := goquery.NewDocument(url2)
-    result := StartParser(document)
-    if !result {
-        t.Error("TestStartParser testing got ", result)
-    } else {
-        t.Log("TestStartParser passed!")
-    }
-    fmt.Println("resutl:", result)
-    
+	result := StartParser(document)
+	if !result {
+		t.Error("TestStartParser testing got ", result)
+	} else {
+		t.Log("TestStartParser passed!")
+	}
+	fmt.Println("resutl:", result)
+
 }
 
 func TestParserEndtoEnd(t *testing.T) {
@@ -72,11 +72,6 @@ func TestParserEndtoEnd(t *testing.T) {
 			fmt.Println("image:%s", video.Image)
 			fmt.Println("location:%s", video.Location)
 			fmt.Println("categories:%s", video.Categories)
-//             bucket, fileName := models.UploadImage(video.Image)
-//            fmt.Println("bucket:%s, fileName:%s", bucket,fileName)
-//            bucket, fileName, duration, timescale := models.UploadVideo(video.Location)
-//            fmt.Println("bucket:%s, fileName:%s, duaration:%d, timescale:%d", bucket,fileName,duration,timescale)
-            
 		}
 
 	}

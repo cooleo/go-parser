@@ -1,15 +1,11 @@
 package common
 
 import (
-   // "fmt"
-	//"net/http"
-	//"reflect"
 	"strings"
 	"unicode"
 )
 
 func GenerateTextSlug(Text string) string {
-    //return utils.GenerateSlug(Text)
     return strings.Map(func(r rune) rune {
 		switch {
 		case r == ' ', r == '-':

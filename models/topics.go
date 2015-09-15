@@ -19,7 +19,6 @@ func (dao *Dao) CreateTopic(topic *Topic) error {
 	return err
 }
 func (dao *Dao) FindTopicBySlug(Slug string) *Topic {
-	// topics := []Topic{}
 
 	topicCollection := dao.session.DB(DbName).C(TopicCollection)
 	topic := new(Topic)
@@ -34,10 +33,9 @@ func (dao *Dao) CreateTopicFromList(Categories []string) []Topic {
 	for index := range Categories {
 		topicName := Categories[index]
 		slugName := common.GenerateTextSlug(topicName)
-		//var existedTopic Topic
 		existedTopic := dao.FindTopicBySlug(slugName)
 
-		if (slugName != "" && existedTopic == nil )||(existedTopic.Id == ""){
+		if (slugName != "" && existedTopic == nil) || (existedTopic.Id == "") {
 			topic := new(Topic)
 			topic.Id = bson.NewObjectId()
 			topic.Name = Categories[index]

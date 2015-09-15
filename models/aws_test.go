@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-/*
+
 func TestUploadImage(t *testing.T) {
 	bucket, filename := UploadImage("http://avatar.nct.nixcdn.com/slideshow/2015/09/05/2/4/c/2/1441426162993.jpg")
 	if bucket == "" && filename == "" {
@@ -24,7 +24,7 @@ func TestUploadVideo(t *testing.T) {
 		t.Log("TestUploadVideo passed.")
 	}
     fmt.Println("bucket: %s, filename:%s, duration:%d, timescale:%d, duration:%s", bucket, fileName, duration, timescale,durstr)
-}*/
+}
 
 func TestGetDuration(t *testing.T) {
 	duration := GetDuration(17678000 / 1000)
@@ -35,12 +35,9 @@ func TestGetDuration(t *testing.T) {
 	}
 	fmt.Println("duration:", duration)
 }
-func TestExtractMp4Info(t *testing.T) {
-   // dir := "/Users/hungnguyendang/work/src/go-parser-engine/models/1iWznsARxTE.mp4"
-    //dir := "/Users/hungnguyendang/work/src/go-parser-engine/parser/clipvn/1iWxyKHl7PJ.mp4"
+func TestExtractMp4Info(t *testing.T) {   
     dir := "/Users/hungnguyendang/Desktop/6c07810750a06cda6fa20db03d2d5449.mp4"
-    duration, timescale, durationstr, width, height := ExtractMp4Meta(dir)
-	
+    duration, timescale, durationstr, width, height := ExtractMp4Meta(dir)	
     fmt.Println("duaration:%d, timescale:%d, durationstr:%s, width:%d, height:%d",duration, timescale, durationstr, width, height)
   
 }

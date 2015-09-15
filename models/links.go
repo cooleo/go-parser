@@ -1,9 +1,7 @@
 package models
 
 import (
-	// "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	//"time"
 )
 
 type Link struct {
@@ -12,9 +10,9 @@ type Link struct {
 }
 
 func (dao *Dao) CreateLink(link *Link) error {
-	linkCollection := dao.session.DB(DbName).C(LinkCollection)	
+	linkCollection := dao.session.DB(DbName).C(LinkCollection)
 	_, err := linkCollection.Upsert(bson.M{"id": link.Id}, link)
-	if err != nil {		
+	if err != nil {
 	}
 	return err
 }

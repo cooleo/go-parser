@@ -1,8 +1,8 @@
 package models
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"fmt"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type PageHtml struct {
@@ -36,7 +36,7 @@ func (dao *Dao) FindPages() []PageHtml {
 func (dao *Dao) FindParsePages() []PageHtml {
 	pageCollection := dao.session.DB(DbName).C(PageCollection)
 	pages := []PageHtml{}
-	query := pageCollection.Find(bson.M{"parsed":false}).Limit(5)
+	query := pageCollection.Find(bson.M{"parsed": false}).Limit(5)
 	query.All(&pages)
 	return pages
 }
@@ -52,13 +52,10 @@ func (dao *Dao) FindPageById(id string) *PageHtml {
 func (dao *Dao) UpdatePage(Page PageHtml) bool {
 	fmt.Println("Page.Id:", Page.Id)
 	pageCollection := dao.session.DB(DbName).C(PageCollection)
-	//err := pageCollection.Update(bson.M{"id": Page.Id}, Page)
 	err := pageCollection.Update(bson.M{"id": Page.Id}, Page)
-	//err := pageCollection.Update(bson.M{"_id": Page.Id}, Page)
 	if err != nil {
 		fmt.Println("Error Page.Id:", Page.Id)
 	}
 	return true
-
 
 }

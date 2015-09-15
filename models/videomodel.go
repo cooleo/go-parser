@@ -1,14 +1,10 @@
-package models 
+package models
 
-import (
-
-   
-)
+import ()
 
 type VideoModel struct {
-    Image string
-    Location string
-    Title string    
-    Categories []string
+	Image      string
+	Location   string
+	Title      string
+	Categories []string
 }
-

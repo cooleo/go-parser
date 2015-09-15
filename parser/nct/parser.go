@@ -1,6 +1,5 @@
 package nct
 
-
 import (
 	"encoding/xml"
 	"fmt"
@@ -32,8 +31,7 @@ func GetXmlContent(Url string, categories []string, Title string, Thumb string) 
 	body, err := ioutil.ReadAll(resp.Body)
 	var q Query
 	xml.Unmarshal(body, &q)
-	//fmt.Println("%s\n", q)
-	//fmt.Println("%s\n", q.Tracklist)
+
 	var videoList []*models.VideoModel
 	for _, video := range q.Tracklist {
 		if video.Location != "" {
@@ -68,14 +66,13 @@ func GetThumb(doc *goquery.Document) string {
 func IsDetailPage(document *goquery.Document) bool {
 	detail := document.Find("div[id=player]")
 	if detail != nil && detail.Length() > 0 {
-		//fmt.Println("detail>>>>>>>>>>>%s",detail.First().Html())
 		return true
 	}
 	return false
 }
 
 func GetCategory(document *goquery.Document) []string {
-	
+
 	var categories []string
 	descriptionBox, _ := document.Find("div[class='info-detail player-detail-width']").Html()
 	if descriptionBox == "" {
@@ -86,15 +83,15 @@ func GetCategory(document *goquery.Document) []string {
 		href, _ := s.Attr("href")
 		if strings.Contains(href, "http://v.nhaccuatui.com/") {
 			fmt.Println("category:%s", s.Text())
-			
-            categories = append(categories, strings.TrimSpace(s.Text()))
+
+			categories = append(categories, strings.TrimSpace(s.Text()))
 		}
 	})
 	return categories
 }
 
 func GetSourceList(document *goquery.Document) string {
-    
+
 	key, _ := document.Find("a[play_key]").First().Attr("play_key")
 	fmt.Println("detail.Length():%s", key)
 	if key != "" {
@@ -111,23 +108,22 @@ func GetSourceList(document *goquery.Document) string {
 	}
 }
 
+func StartParser(dao *models.Dao, document *goquery.Document, c *elastigo.Conn) bool {
 
-func StartParser(dao *models.Dao , document *goquery.Document, c *elastigo.Conn) bool{
-    
 	result := IsDetailPage(document)
 	if result {
-        
+
 		categories := GetCategory(document)
 		fmt.Println("categories :%s", categories)
 		sourceUrl := GetSourceList(document)
 		fmt.Println("srouceUrl:%s", sourceUrl)
 		var videoList []*models.VideoModel
 		videoList = GetXmlContent(sourceUrl, categories, "", "")
-        
-        topics := dao.CreateTopicFromList(categories)
-        
-        fmt.Println("topics:%s", topics)
-        
+
+		topics := dao.CreateTopicFromList(categories)
+
+		fmt.Println("topics:%s", topics)
+
 		for _, video := range videoList {
 			fmt.Println("title:%s", video.Title)
 			fmt.Println("image:%s", video.Image)
@@ -145,21 +141,20 @@ func StartParser(dao *models.Dao , document *goquery.Document, c *elastigo.Conn)
 
 			video, _ := dao.CreateVideoWithParams(fileName, bucket, duration, timescale, durstr, video.Title)
 			fmt.Println("video:", video)
-           
-            
-            var videos [] models.Video
-            videos = append(videos, *video)
-            feed, _ := dao.CreateWithParams(video.Title, "", "", imageFile, imageBucket, categories, topics, videos, *image,c)
-            fmt.Println("feed:", feed)
+
+			var videos []models.Video
+			videos = append(videos, *video)
+			feed, _ := dao.CreateWithParams(video.Title, "", "", imageFile, imageBucket, categories, topics, videos, *image, c)
+			fmt.Println("feed:", feed)
 		}
-        return true
-    } else {
-        return false
-    }
-    
+		return true
+	} else {
+		return false
+	}
+
 }
-func Print(dao *models.Dao, page models.PageHtml,c *elastigo.Conn) {
-	
+func Print(dao *models.Dao, page models.PageHtml, c *elastigo.Conn) {
+
 	doc, err := html.Parse(strings.NewReader(page.Html))
 	if err != nil {
 		log.Fatal(err)
@@ -167,9 +162,8 @@ func Print(dao *models.Dao, page models.PageHtml,c *elastigo.Conn) {
 	document := goquery.NewDocumentFromNode(doc)
 	if document == nil {
 	}
-    
-    StartParser(dao, document,c)
-    
+
+	StartParser(dao, document, c)
+
 	fmt.Println("url:%s", page.Url)
 }
-
