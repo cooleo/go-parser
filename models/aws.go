@@ -92,7 +92,10 @@ func GetDuration(Duration uint32) string {
 }
 
 func ExtractMp4Meta(Dir string) (uint32, uint32, string, int, int) {
-    m, _ := mp4.Open(Dir)
+    m, err := mp4.Open(Dir)
+	if err != nil {
+	  log.Printf(".........ExtractMp4Meta Error:%s", err)
+	}
     log.Printf("video %dx%d", m.W, m.H)
     log.Printf("duration %d", uint32(m.Dur))
     log.Println("duration time:%s", GetDuration(uint32(m.Dur)))    
@@ -108,34 +111,35 @@ func UploadVideo(Url string) (string, string, uint32, uint32, string) {
 	fmt.Println("Downloading", Url, "to", fileName)
 	file, err := os.Create(fileName)
 	if err != nil {
-		fmt.Println("Error while creating", fileName, "-", err)
+		log.Printf("Error while creating", fileName, "-", err)
 		return "", "", 0, 0,""
 	}
 	defer file.Close()
 
 	response, err := http.Get(Url)
 	if err != nil {
-		fmt.Println("Error while downloading", Url, "-", err)
+		log.Printf("Error while downloading", Url, "-", err)
 		return "", "", 0, 0,""
 	}
 	defer response.Body.Close()
 
 	n, err := io.Copy(file, response.Body)
 	if err != nil {
-		fmt.Println("Error while downloading", Url, "-", err)
+		log.Printf("Error while downloading", Url, "-", err)
 		return "", "", 0, 0,""
 	}
-	fmt.Println("n:%s", n)
+	log.Printf("n:%s", n)
 
 	dir, err := filepath.Abs(fileName)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("error file Abs:%s\n", err)
 	}
-	fmt.Println("dir:%s\n", dir)
+	log.Printf(".......file path:%s\n", dir)
     
     duration, timescale, durationstr, width, height := ExtractMp4Meta(dir)
 	
-    fmt.Println("duaration:%d, timescale:%d, durationstr:%s, width:%d, height:%d",duration, timescale, durationstr, width, height)
+    log.Printf("duaration:%d, timescale:%d, durationstr:%s, width:%d, height:%d",duration, timescale, durationstr, width, height)
+	log.Printf("Start upload file to S3:%s\n", fileName)
 	uploader := s3manager.NewUploader(nil)
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: &bucket,
@@ -143,7 +147,7 @@ func UploadVideo(Url string) (string, string, uint32, uint32, string) {
 		Body:   file,
 	})
 	if err != nil {
-		log.Fatalln("Failed to upload", err)
+		log.Printf("Failed to upload", err)
 	}
 	log.Println("Uploaded....%s", result)
     err = os.Remove(dir)
