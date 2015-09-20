@@ -36,7 +36,7 @@ func (dao *Dao) FindPages() []PageHtml {
 func (dao *Dao) FindParsePages() []PageHtml {
 	pageCollection := dao.session.DB(DbName).C(PageCollection)
 	pages := []PageHtml{}
-	query := pageCollection.Find(bson.M{"parsed": false}).Limit(5)
+	query := pageCollection.Find(bson.M{"parsed": false}).Limit(1)
 	query.All(&pages)
 	return pages
 }

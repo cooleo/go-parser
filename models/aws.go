@@ -95,6 +95,7 @@ func ExtractMp4Meta(Dir string) (uint32, uint32, string, int, int) {
     m, err := mp4.Open(Dir)
 	if err != nil {
 	  fmt.Println(".........ExtractMp4Meta Error:%s", err)
+	  return 0, 0, "", 0, 0
 	}
     fmt.Println("video %dx%d", m.W, m.H)
     fmt.Println("duration %d", uint32(m.Dur))
