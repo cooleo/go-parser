@@ -110,6 +110,7 @@ func StartParser(dao *models.Dao, document *goquery.Document, c *elastigo.Conn) 
 		thumb := GetThumb(document)
 		fmt.Println("thumb :%s", thumb)
 		title := GetTitle(document)
+		
 
 		var videoList []*models.VideoModel
 		videoList = GetXmlContent(sourceUrl, categories, thumb, title)
@@ -123,23 +124,26 @@ func StartParser(dao *models.Dao, document *goquery.Document, c *elastigo.Conn) 
 			fmt.Println("image:%s", video.Image)
 			fmt.Println("location:%s", video.Location)
 			fmt.Println("categories:%s", video.Categories)
+			if video.Title != "" &&  strings.Contains(video.Location, ".mp4") {
+				imageBucket, imageFile := models.UploadImage(video.Image)
+				fmt.Println("bucket:%s, fileName:%s", imageBucket, imageFile)
+	
+				image, _ := dao.CreateImageWithParams(imageBucket, imageFile, video.Title)
+				fmt.Println("image:", image)
+	
+				bucket, fileName, duration, timescale, durstr := models.UploadVideo(video.Location)
+				fmt.Println("bucket:%s, fileName:%s, duaration:%d, timescale:%d, duration:%s", bucket, fileName, duration, timescale, durstr)
+	
+				video, _ := dao.CreateVideoWithParams(fileName, bucket, duration, timescale, durstr, video.Title)
+				fmt.Println("video:", video)
+	
+				var videos []models.Video
+				videos = append(videos, *video)
+				feed, _ := dao.CreateWithParams(video.Title, "", "", imageFile, imageBucket, categories, topics, videos, *image, c)
+				fmt.Println("feed:", feed)
+			}
 
-			imageBucket, imageFile := models.UploadImage(video.Image)
-			fmt.Println("bucket:%s, fileName:%s", imageBucket, imageFile)
-
-			image, _ := dao.CreateImageWithParams(imageBucket, imageFile, video.Title)
-			fmt.Println("image:", image)
-
-			bucket, fileName, duration, timescale, durstr := models.UploadVideo(video.Location)
-			fmt.Println("bucket:%s, fileName:%s, duaration:%d, timescale:%d, duration:%s", bucket, fileName, duration, timescale, durstr)
-
-			video, _ := dao.CreateVideoWithParams(fileName, bucket, duration, timescale, durstr, video.Title)
-			fmt.Println("video:", video)
-
-			var videos []models.Video
-			videos = append(videos, *video)
-			feed, _ := dao.CreateWithParams(video.Title, "", "", imageFile, imageBucket, categories, topics, videos, *image, c)
-			fmt.Println("feed:", feed)
+			
 		}
 		return true
 	} else {
