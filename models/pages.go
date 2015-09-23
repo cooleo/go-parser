@@ -24,6 +24,13 @@ func (dao *Dao) CreatePage(page *PageHtml) error {
 	}
 	return err
 }
+func (dao *Dao) CheckPageStatus(id string) bool {
+    pageCollection := dao.session.DB(DbName).C(PageCollection)
+	page := new(PageHtml)
+	query := pageCollection.Find(bson.M{"id": bson.ObjectIdHex(id)})
+	query.One(page)
+	return page.Parsed
+}
 
 func (dao *Dao) FindPages() []PageHtml {
 	pageCollection := dao.session.DB(DbName).C(PageCollection)
