@@ -33,7 +33,7 @@ func (dao *Dao) CreateFeed(feed *Feed) error {
 func (dao *Dao) FindFeedByTitle(title string) bool {
 	feedCollection := dao.session.DB(DbName).C(FeedCollection)
 	pages := []Feed{}
-	query := pageCollection.Find(bson.M{"Title": title}}).Limit(1)
+	query := pageCollection.Find(bson.M{"title": title}}).Limit(1)
 	query.All(&pages)
 	if cap(pages) >= 1 {
 		return true
