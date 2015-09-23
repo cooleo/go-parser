@@ -30,6 +30,18 @@ func (dao *Dao) CreateFeed(feed *Feed) error {
 	}
 	return err
 }
+func (dao *Dao) FindFeedByTitle(title string) bool {
+	feedCollection := dao.session.DB(DbName).C(FeedCollection)
+	pages := []Feed{}
+	query := pageCollection.Find(Title: title}).Limit(1)
+	query.All(&pages)
+	if cap(pages) >= 1 {
+		return true
+	} else {
+		return false
+	}
+
+}
 func (dao *Dao) CreateWithParams(Title string, Url string, HostName string, Thumb string, ThumbBucket string, Topics []string, TopicList []Topic, Videos []Video, Photo Image, c *elastigo.Conn) (*Feed, error) {
 	var feed *Feed
 
