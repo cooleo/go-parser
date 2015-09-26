@@ -88,8 +88,8 @@ func GetTitle(document *goquery.Document) string {
 func GetSourceList(document *goquery.Document) string {
 	contentString, _ := document.Find("div[class=box-player]").Html()
 	if strings.Contains(contentString, "<source") {
-		startIndex := strings.LastIndex(contentString, "<source") + 13
-		endIndex := strings.LastIndex(contentString, ".mp4") + 4
+		startIndex := strings.Index(contentString, "<source") + 13
+		endIndex := strings.Index(contentString, ".mp4") + 4
 		keyString := contentString[startIndex:endIndex]
 		return keyString
 	}
