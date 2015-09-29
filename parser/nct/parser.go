@@ -104,6 +104,12 @@ func GetSourceList(document *goquery.Document) string {
 			keyString := contentString[startIndex:endIndex]
 			return "http://v.nhaccuatui.com/flash/xml?key2=" + keyString
 		}
+		if strings.Contains(contentString, "key3=") {
+			startIndex := strings.Index(contentString, "key3=") + 5
+			endIndex := startIndex + 32
+			keyString := contentString[startIndex:endIndex]
+			return "http://v.nhaccuatui.com/flash/xml?key3=" + keyString
+		}
 		return ""
 	}
 }
